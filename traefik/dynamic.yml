@@ -1,0 +1,9 @@
+tls:
+  certificates:
+    - certFile: /app/certs/whoami.localhost.crt
+      keyFile: /app/certs/server.key
+  # stores:
+  #   default:
+  #     defaultCertificate:
+  #       certFile: /app/certs/localhost.crt
+  #       keyFile: /app/certs/localhost.key

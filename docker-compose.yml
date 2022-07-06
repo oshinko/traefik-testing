@@ -1,0 +1,38 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: "traefik:v2.7"
+    container_name: "traefik"
+    command:
+      - "--log.level=${LOG_LEVEL}"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:${HTTP_PORT}"
+      - --entryPoints.websecure.address=:${HTTPS_PORT}
+      - --providers.file.directory=/etc/traefik
+      - --providers.file.watch=true
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${HTTPS_PORT}:${HTTPS_PORT}"
+      - "8080:8080"  # The Web UI (enabled by --api.insecure=true)
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./certs:/app/certs:ro
+      - ./traefik:/etc/traefik:ro
+    restart: ${RESTART_POLICY}
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`${APP_HOSTNAME}`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      - "traefik.http.routers.whoami-ssl.tls=true"
+      - "traefik.http.routers.whoami-ssl.rule=Host(`${APP_HOSTNAME}`)"
+      - "traefik.http.routers.whoami-ssl.entryPoints=websecure"
+      - "traefik.http.routers.whoami-ssl.service=whoami"
+    restart: ${RESTART_POLICY}
