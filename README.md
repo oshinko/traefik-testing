@@ -6,7 +6,7 @@
 cd ./certs
 
 # CA の鍵を作成する
-openssl ecparam -genkey -name secp256k1 -out ./ca.key
+openssl ecparam -genkey -name prime256v1 -out ./ca.key
 
 # CA の証明書署名要求 (CSR) を作成する
 openssl req -new -sha256 -key ./ca.key -subj "/C=JP/ST=Tokyo/O=Example/CN=Example Root CA" -out ./ca.csr
@@ -15,7 +15,7 @@ openssl req -new -sha256 -key ./ca.key -subj "/C=JP/ST=Tokyo/O=Example/CN=Exampl
 openssl x509 -req -sha256 -days 3650 -signkey ./ca.key -in ./ca.csr -out ./ca.crt
 
 # サーバー (ドメインの証明書) の鍵を作成する
-openssl ecparam -genkey -name secp256k1 -out ./server.key
+openssl ecparam -genkey -name prime256v1 -out ./server.key
 
 # ドメインの証明書署名要求 (CSR) を作成する
 openssl req -new -sha256 -key ./server.key -subj "/CN=whoami.localhost" -out ./whoami.localhost.csr
