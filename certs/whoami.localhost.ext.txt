@@ -1,1 +1,2 @@
+basicConstraints = critical, CA:FALSE
 subjectAltName = DNS:whoami.localhost
